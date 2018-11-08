@@ -10,9 +10,11 @@ var wordList = [
     "test2",
     "test3",
 ];
-//randomly picked answer
-var underlineDiv = document.getElementById("underline");
+var numWins = 0;
 var totalGuess = 8;
+var lettersGuessed = []; // letters guessed stored as arr
+var currentWord = [];
+
 
 //=====FUNCTIONS=====
 //rand number generator
@@ -25,7 +27,10 @@ var randNumGen = function getRandomIntInclusive(min, max) {
 //function to pick a random answer from an array
 var pickWord = function (arr) {
     var i = randNumGen(0, arr.length-1);
-    return arr[i];
+    var picked = arr[i];
+    for (var j=0; j<picked.length; j++) {
+        currentWord.push(picked[j]);
+    }
 }; //works
 
 //function to check if a letter is in the word
@@ -52,24 +57,21 @@ var indexToReturn = function(word, letter) {
     return arrOfIndexes;
 }; //works
 
-//show underlines in html for the picked answer
-var showUnderline = function(word) {
-    for (var i=0; i<word; i++) {
-        underlineDiv.textContent += "_";
-        console.log("5");
-    }
-}; //not working, at all. like console.log dont even show up. must be not running at all when i call it?
 
+//play the game
+var play = function() {
 
+}
 
 
 // picked answer
-var theWord = pickWord(wordList);
-console.log(theWord);
+pickWord(wordList);
+console.log(currentWord);
+console.log(numWins);
+console.log(totalGuess);
 
 
 //TESTING GROUND
-showUnderline(theWord);
 
 
 
