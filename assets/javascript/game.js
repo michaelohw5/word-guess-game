@@ -1,19 +1,27 @@
 // =====VARIABLES=====
 const maxGuesses = 10; // max guesses allowed. stays constant
-var wordList;
-var numWins;
-var remainingGuess;
+var wordList; // list of words, uninitialized
+var numWins; // number of correct guesses
+var remainingGuess; // number of remaining guesses
 var lettersGuessed;// letters guessed stored as arr
-var currentWord;
-var displayWord;
-var currentLetter;
-var correctDiv = document.getElementById("correct");
+var currentWord; // current word selected (randomly)
+var displayWord; // current word in display form (so currentWord is not altered)
+var currentLetter; // current letter inputted by the user
+var indexOfLetter = [];
+var correctDiv = document.getElementById("correct"); //
 var remainingDiv = document.getElementById("remaining");
 var guessedDiv = document.getElementById("guessedLetters");
 var currentDiv = document.getElementById("current");
 
 
 //=====FUNCTIONS=====
+
+//rand number generator
+var randNumGen = function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+}; //works cuz copy pasta
 
 //Initialize the game
 var initializeGame = function () {
@@ -31,15 +39,10 @@ var initializeGame = function () {
     remainingGuess = 10;
     lettersGuessed = [];
     currentWord = [];
+    underlineWord = [];
     displayWord = "";
 }
 
-//rand number generator
-var randNumGen = function getRandomIntInclusive(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
-}; //works cuz copy pasta
 
 //function to pick a random answer from an array
 var pickWord = function (arr) {
@@ -64,28 +67,29 @@ var checkLetter = function () {
 //once we check if a letter is in the word, we need to figure out 
 //the indexes... indices? anyway, so we can use it.
 //because of that I think it needs to return an array.
-var indexToChange = function (word, letter) {
-    var arrOfIndexes = [];
-    for (var i = 0; i < word.length; i++) {
-        if (letter === word[i]) {
-            arrOfIndexes.push(i);
-        }
-    }
-    return arrOfIndexes;
-}; //works
+// var indexToChange = function (word, letter) {
+//     var arrOfIndexes = [];
+//     for (var i = 0; i < word.length; i++) {
+//         if (letter === word[i]) {
+//             arrOfIndexes.push(i);
+//         }
+//     }
+//     console.log(arrOfIndexes);
+//     return arrOfIndexes;
+// }; //works
 
 //replace the word with underline
 var underline = function () {
-    arrToReturn = [];
+    // arrToReturn = [];
     for (var i = 0; i < currentWord.length; i++) {
         if (currentWord[i] === " ") {
-            arrToReturn.push('&nbsp;');
+            underlineWord.push('&nbsp;');
         }
         else {
-            arrToReturn.push("_")
+            underlineWord.push("_")
         }
     }
-    return arrToReturn.join(" ");
+    return underlineWord.join(" ");
 };
 
 //underline array to string for display
@@ -106,10 +110,11 @@ var currentToString = function () {
     return stringToReturn;
 };
 
+
 var insertToCurrent = function () {
-    var newP = document.createElement("p");
-    newP.innerHTML = underline();
-    currentDiv.appendChild(newP);
+    var targetDiv = document.getElementById("currentWord");
+    var underDiv = document.getElementById("currentUnderline");
+    underDiv.innerHTML = underline();
 }
 
 var insertToGuessedLetters = function () {
@@ -138,46 +143,29 @@ var isLetter = function (ch) {
     return /^[A-Z]$/i.test(ch);
 };
 
-//gotta change displayWord whenever there is correct guess
-
-
 //check whether the user input is within the currentWord. returns boolean.
 var checkGuess = function () {
     document.onkeyup = function (e) {
-        var userInput = e.key; //get user input
         currentLetter = e.key;
-        if (isLetter(userInput)) {
-            for (var i = 0; i < currentWord; i++) {
-                if (currentWord[i] === userInput) {
-                    return true;
+        console.log("at least running");
+        if (isLetter(currentLetter)) {
+            for (var i = 0; i < currentWord.length; i++) {
+                if (currentWord[i] === currentLetter) {
+                    indexOfLetter.push(i);
                 }
             }
-            lettersGuessed.push(userInput);
-            console.log(lettersGuessed);
+            lettersGuessed.push(currentLetter);
+            console.log("working");
         }
         else {
-           return false;
+           console.log("not working");
         }
+        console.log("til the end");
+        console.log(lettersGuessed);
+        console.log(indexOfLetter);
     }
-};
+}; //yesssss
 
-//if user input is correct then replace underlines with that input
-var displayCorrectLetter = function () {
-    var correctIndexes = indexToChange();
-    for (var i = 0; i<correctIndexes.length; i++) {
-        
-    }
-}
-
-
-// window.onkeydown = function (e) {
-//     var code = e.keyCode ? e.keyCode : e.which;
-//     if (code === 38) { //up key
-//         alert('up');
-//     } else if (code === 40) { //down key
-//         alert('down');
-//     }
-// };
 
 var play = function () {
     //TESTING GROUND
@@ -185,12 +173,7 @@ var play = function () {
     resetGame();
     resetPage();
     checkGuess();
-    console.log(currentWord.join(""));
-    console.log(numWins);
-    console.log(remainingGuess);
-    console.log(underline(currentWord));
-    console.log(currentToString(currentWord));
-    console.log(lettersGuessed);
+    console.log(currentWord);
 };
 
 //=====PLAY=====
