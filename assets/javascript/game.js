@@ -26,14 +26,7 @@ var randNumGen = function getRandomIntInclusive(min, max) {
 //Initialize the game
 var initializeGame = function () {
     wordList = [
-        "pink floyd",
-        "led zeppelin",
-        "the doors",
-        "rolling stones",
-        "anotherone",
-        "test1",
-        "test2",
-        "test3",
+        "test subject"
     ];
     numWins = 0;
     remainingGuess = 10;
@@ -143,24 +136,63 @@ var isLetter = function (ch) {
     return /^[A-Z]$/i.test(ch);
 };
 
-//check whether the user input is within the currentWord. returns boolean.
+var resetUnderlineDisplay = function () {
+    var underDiv = document.getElementById("currentUnderline");
+    underDiv.innerHTML = underlineWord.join(" ");
+}
+
+var resetOtherDisplay = function () {
+    correctDiv.textContent = numWins;
+    remainingDiv.textContent = remainingGuess;
+}
+
+var gameWin = function () {
+    alert("YOU WIN");
+
+}
+
+var gameOver = function () {
+    alert("YOU LOSE");
+}
+
+//check whether the user input is within the currentWord.
 var checkGuess = function () {
     document.onkeyup = function (e) {
         currentLetter = e.key;
-        console.log("at least running");
+        resetUnderlineDisplay();
+        resetOtherDisplay();
         if (isLetter(currentLetter)) {
-            for (var i = 0; i < currentWord.length; i++) {
-                if (currentWord[i] === currentLetter) {
-                    indexOfLetter.push(i);
-                }
+            if (remainingGuess === -1) {
+                resetOtherDisplay();
+                gameOver();
             }
-            lettersGuessed.push(currentLetter);
-            console.log("working");
+            else if (!currentWord.includes(currentLetter)) {
+                remainingGuess--;
+            }
+            
+            if (numWins === currentWord.length) {
+                gameWin();
+            }
+            else {
+                if (!lettersGuessed.includes(currentLetter)) {
+                    for (var i = 0; i < currentWord.length; i++) {
+                        if (currentWord[i] === currentLetter) {
+                            indexOfLetter.push(i);
+                            underlineWord[i] = currentLetter;
+                        }
+                    }
+                    numWins++;
+                }
+                lettersGuessed.push(currentLetter);
+                console.log("number wins " + numWins);
+                console.log(underlineWord);
+                resetUnderlineDisplay();
+                resetOtherDisplay();
+            }
         }
         else {
-           console.log("not working");
+            console.log("not working");
         }
-        console.log("til the end");
         console.log(lettersGuessed);
         console.log(indexOfLetter);
     }
@@ -173,7 +205,6 @@ var play = function () {
     resetGame();
     resetPage();
     checkGuess();
-    console.log(currentWord);
 };
 
 //=====PLAY=====
