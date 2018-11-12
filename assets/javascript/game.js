@@ -8,6 +8,8 @@ var currentWord; // current word selected (randomly)
 var displayWord; // current word in display form (so currentWord is not altered)
 var currentLetter; // current letter inputted by the user
 var indexOfLetter = [];
+var underlineWord;
+var gameOver = false;
 var correctDiv = document.getElementById("correct"); //
 var remainingDiv = document.getElementById("remaining");
 var guessedDiv = document.getElementById("guessedLetters");
@@ -26,7 +28,9 @@ var randNumGen = function getRandomIntInclusive(min, max) {
 //Initialize the game
 var initializeGame = function () {
     wordList = [
-        "test subject"
+        "test subject",
+        "test subject two",
+
     ];
     numWins = 0;
     remainingGuess = 10;
@@ -152,6 +156,8 @@ var gameWin = function () {
 }
 
 var gameOver = function () {
+    remainingGuess = 0;
+    gameOver = true;
     alert("YOU LOSE");
 }
 
@@ -162,16 +168,19 @@ var checkGuess = function () {
         resetUnderlineDisplay();
         resetOtherDisplay();
         if (isLetter(currentLetter)) {
-            if (remainingGuess === -1) {
-                resetOtherDisplay();
+            if (underlineWord === currentWord) {
+                gameWin();
+            }
+            else if (remainingGuess === -1) {
                 gameOver();
+                initializeGame();
+                resetGame();
+                resetPage();
             }
             else if (!currentWord.includes(currentLetter)) {
                 remainingGuess--;
-            }
-            
-            if (numWins === currentWord.length) {
-                gameWin();
+                lettersGuessed.push(currentLetter);
+                document.getElementById("guessedLetters").textContent = lettersGuessed;
             }
             else {
                 if (!lettersGuessed.includes(currentLetter)) {
@@ -184,14 +193,13 @@ var checkGuess = function () {
                     numWins++;
                 }
                 lettersGuessed.push(currentLetter);
-                console.log("number wins " + numWins);
-                console.log(underlineWord);
+                document.getElementById("guessedLetters").textContent = lettersGuessed;
                 resetUnderlineDisplay();
                 resetOtherDisplay();
             }
         }
-        else {
-            console.log("not working");
+        else if (!isLetter(currentLetter)) {
+            alert("Press the letters, you savage!");
         }
         console.log(lettersGuessed);
         console.log(indexOfLetter);
