@@ -28,9 +28,9 @@ var randNumGen = function getRandomIntInclusive(min, max) {
 //Initialize the game
 var initializeGame = function () {
     wordList = [
-        "test subject",
-        "test subject two",
-
+        "pink floyd",
+        "rolling stones",
+        "the doors"
     ];
     numWins = 0;
     remainingGuess = 10;
@@ -199,7 +199,7 @@ var checkGuess = function () {
             }
         }
         else if (!isLetter(currentLetter)) {
-            alert("Press the letters, you savage!");
+            alert("You must press a letter key");
         }
         console.log(lettersGuessed);
         console.log(indexOfLetter);
